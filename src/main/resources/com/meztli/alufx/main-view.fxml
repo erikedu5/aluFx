@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.meztli.alufx.HelloController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <HBox prefHeight="0.0" prefWidth="200.0" alignment="BASELINE_CENTER">
+       <children>
+          <Button onAction="#onMaterialesButtonClick" text="Tipos de material" />
+       </children>
+       <children>
+          <Button onAction="#onCorteButtonClick" text="Tipos de corte" />
+       </children>
+       <children>
+       <Button onAction="#onMedidasButtonClick" text="Medidas por corte" />
+       </children>
+   </HBox>
+   <VBox fx:id="Calculo" prefHeight="200.0" prefWidth="100.0">
+       <padding>
+           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+       </padding>
+       <children>
+          <Label text="Material" />
+          <ChoiceBox fx:id="materiales" maxWidth="Infinity"/>
+          <Label text=" "/>
+       </children>
+       <children>
+           <Label text="Producto" />
+           <ChoiceBox fx:id="tipoProducto" maxWidth="Infinity"/>
+           <Label text=" "/>
+       </children>
+       <children>
+          <Label text="Alto " />
+          <TextField fx:id="alto" />
+          <Label text=" "/>
+       </children>
+       <children>
+          <Label text="Ancho " />
+          <TextField fx:id="ancho" />
+          <Label text=" "/>
+       </children>
+       <children>
+          <Button alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#onCalculateButtonClick" text="Calcular" />
+      </children>
+   </VBox>
+   <TableView fx:id="calculo" prefHeight="200.0" prefWidth="200.0">
+     <columns>
+     </columns>
+   </TableView>
+
+</VBox>

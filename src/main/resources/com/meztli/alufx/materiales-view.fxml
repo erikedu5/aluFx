@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.meztli.alufx.MaterialController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label fx:id="text_name">Nombre del material</Label>
+    <TextField fx:id="nombre" />
+
+    <Button onAction="#onGuardarButtonClick" text="Guardar Material" />
+   <TableView fx:id="materiales" prefHeight="200.0" prefWidth="200.0">
+     <columns>
+       <!--TableColumn editable="false" prefWidth="75.0" text="Id" />
+       <TableColumn editable="false" prefWidth="75.0" text="Nombre" /-->
+     </columns>
+   </TableView>
+
+</VBox>
