@@ -10,7 +10,10 @@ module com.meztli.alufx {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires jakarta.persistence;
 
     opens com.meztli.alufx to javafx.fxml;
+    opens com.meztli.alufx.entities to jakarta.persistence;
+    exports com.meztli.alufx.service;
     exports com.meztli.alufx;
 }

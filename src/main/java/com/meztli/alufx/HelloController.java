@@ -1,6 +1,8 @@
 package com.meztli.alufx;
 
 import com.meztli.alufx.entities.JdbcDao;
+import com.meztli.alufx.entities.Material;
+import com.meztli.alufx.service.MaterialService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -77,11 +79,10 @@ public class HelloController {
         alto.setTextFormatter(textFormatter1);
 
         try {
-            JdbcDao jdbcDao = new JdbcDao();
-            ResultSet rs = jdbcDao.selectAll("materiales");
+            MaterialService service = new MaterialService();
             data = FXCollections.observableArrayList();
-            while (rs.next()) {
-                data.add(rs.getInt("id") + "-" + rs.getString("nombre"));
+            for (Material m : service.getAllMaterials()) {
+                data.add(m.getId() + "-" + m.getNombre());
             }
             materiales.setItems(null);
             materiales.setItems(data);
