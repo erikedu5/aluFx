@@ -1,6 +1,6 @@
 package com.meztli.alufx;
 
-import com.meztli.alufx.entities.JdbcDao;
+import com.meztli.alufx.entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,8 +12,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -77,11 +75,10 @@ public class HelloController {
         alto.setTextFormatter(textFormatter1);
 
         try {
-            JdbcDao jdbcDao = new JdbcDao();
-            ResultSet rs = jdbcDao.selectAll("materiales");
+            MaterialRepository repository = new MaterialRepository();
             data = FXCollections.observableArrayList();
-            while (rs.next()) {
-                data.add(rs.getInt("id") + "-" + rs.getString("nombre"));
+            for (Material m : repository.findAll()) {
+                data.add(m.getId() + "-" + m.getNombre());
             }
             materiales.setItems(null);
             materiales.setItems(data);
@@ -98,9 +95,10 @@ public class HelloController {
     }
 
     @FXML
-    protected void onCalculateButtonClick() throws SQLException {
-        JdbcDao jdbcDao = new JdbcDao();
-        ResultSet rs = jdbcDao.selectAllByMaterialIdAndTipoProducto("medidas", materialElegido, tipoProductoElegido);
+    protected void onCalculateButtonClick() {
+        MedidaRepository medidaRepository = new MedidaRepository();
+        int matId = Integer.parseInt(materialElegido);
+        var medidas = medidaRepository.findByMaterialAndTipoProducto(matId, tipoProductoElegido);
 
         calculo.setItems(null);
         calculoData = FXCollections.observableArrayList();
@@ -116,25 +114,21 @@ public class HelloController {
 
         final ObservableList<Calculo> data = FXCollections.observableArrayList();
 
-        while (rs.next()) {
+        for (Medida med : medidas) {
             Calculo calculo1 = new Calculo();
-            ResultSet rs2 = jdbcDao.selectById("cortes", rs.getInt("id_corte"));
-            boolean aplicaAncho = false;
-            boolean aplicaAlto = false;
-            while (rs2.next()) {
-                String nombreCorte = rs2.getString("nombre");
-                aplicaAlto = rs2.getBoolean("aplicaAlto");
-                aplicaAncho = rs2.getBoolean("aplicaAncho");
-                calculo1.setTipoCorte(nombreCorte);
-            }
-            Double medida = rs.getDouble("medida");
+            Corte corte = med.getCorte();
+            boolean aplicaAncho = corte.isAplicaAncho();
+            boolean aplicaAlto = corte.isAplicaAlto();
+            calculo1.setTipoCorte(corte.getNombre());
+
+            Double medidaVal = med.getMedida();
             Double anchoMed = Double.parseDouble(ancho.getText());
             Double altoMed = Double.parseDouble(alto.getText());
             if (aplicaAncho) {
-                anchoMed = anchoMed - medida;
+                anchoMed = anchoMed - medidaVal;
             }
             if (aplicaAlto) {
-                altoMed = altoMed - medida;
+                altoMed = altoMed - medidaVal;
             }
             calculo1.setAncho(anchoMed);
             calculo1.setAlto(altoMed);

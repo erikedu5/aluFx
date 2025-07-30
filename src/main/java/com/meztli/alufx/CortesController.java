@@ -1,26 +1,22 @@
 package com.meztli.alufx;
 
-import com.meztli.alufx.entities.JdbcDao;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
+import com.meztli.alufx.entities.Corte;
+import com.meztli.alufx.entities.CorteRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Window;
-import javafx.util.Callback;
+import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class CortesController {
 
     @FXML
     private TextField nombre;
 
-    private ObservableList<ObservableList> data;
+    private ObservableList<Corte> data;
 
     @FXML
     private TableView cortes;
@@ -32,53 +28,37 @@ public class CortesController {
     private CheckBox alto;
 
     @FXML
-    public void initialize() throws SQLException {
-        JdbcDao jdbcDao = new JdbcDao();
-        ResultSet rs = jdbcDao.selectAll("cortes");
-        data = FXCollections.observableArrayList();
+    public void initialize() {
+        CorteRepository repo = new CorteRepository();
+        List<Corte> cortesList = repo.findAll();
+        data = FXCollections.observableArrayList(cortesList);
 
-        /**********************************
-         * TABLE COLUMN ADDED DYNAMICALLY *
-         **********************************/
-        if (cortes.getColumns().size() > 1) {
-            cortes.getColumns().remove(0, 4);
-        }
+        TableColumn<Corte, Integer> idCol = new TableColumn<>("id");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
-            final int j = i;
-            TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
-            col.setCellValueFactory(
-                    (Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>)
-                            param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+        TableColumn<Corte, String> nombreCol = new TableColumn<>("nombre");
+        nombreCol.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-            cortes.getColumns().addAll(col);
-        }
+        TableColumn<Corte, Boolean> anchoCol = new TableColumn<>("aplicaAncho");
+        anchoCol.setCellValueFactory(new PropertyValueFactory<>("aplicaAncho"));
 
+        TableColumn<Corte, Boolean> altoCol = new TableColumn<>("aplicaAlto");
+        altoCol.setCellValueFactory(new PropertyValueFactory<>("aplicaAlto"));
 
-        /********************************
-         * Data added to ObservableList *
-         ********************************/
-        while(rs.next()) {
-            ObservableList<String> row = FXCollections.observableArrayList();
-            for(int i=1 ; i<=rs.getMetaData().getColumnCount(); i++){
-                row.add(rs.getString(i));
-            }
-            data.add(row);
-        }
-
+        cortes.getColumns().setAll(idCol, nombreCol, anchoCol, altoCol);
         cortes.setItems(data);
     }
     @FXML
-    protected void onGuardarButtonClick() throws SQLException {
+    protected void onGuardarButtonClick() {
         Window owner = nombre.getScene().getWindow();
 
-        Map<String, Object> values = new HashMap<>();
-        values.put("nombre", nombre.getText());
-        values.put("aplicaAncho", ancho.isSelected() ? 1: 0);
-        values.put("aplicaAlto", alto.isSelected() ? 1: 0);
+        Corte corte = new Corte();
+        corte.setNombre(nombre.getText());
+        corte.setAplicaAncho(ancho.isSelected());
+        corte.setAplicaAlto(alto.isSelected());
 
-        JdbcDao jdbcDao = new JdbcDao();
-        jdbcDao.insert("cortes", values);
+        CorteRepository repo = new CorteRepository();
+        repo.save(corte);
         showAlert(Alert.AlertType.INFORMATION, owner, "Creación correcta!",
                 "Tipo de corte " + nombre.getText() + " Creado correctamente");
         initialize();
