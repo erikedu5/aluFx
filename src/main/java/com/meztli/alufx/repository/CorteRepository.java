@@ -1,5 +1,7 @@
-package com.meztli.alufx.entities;
+package com.meztli.alufx.repository;
 
+import com.meztli.alufx.entities.Corte;
+import com.meztli.alufx.entities.JpaUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;

@@ -12,6 +12,11 @@ module com.meztli.alufx {
     requires jakarta.persistence;
 
     opens com.meztli.alufx to javafx.fxml;
-    opens com.meztli.alufx.entities to jakarta.persistence, org.hibernate.orm.core, ALL-UNNAMED;
+    opens com.meztli.alufx.entities to jakarta.persistence, org.hibernate.orm.core, ALL;
     exports com.meztli.alufx;
+    opens com.meztli.alufx.repository to jakarta.persistence;
+    exports com.meztli.alufx.dto;
+    opens com.meztli.alufx.dto to javafx.fxml;
+    exports com.meztli.alufx.controller;
+    opens com.meztli.alufx.controller to javafx.fxml;
 }

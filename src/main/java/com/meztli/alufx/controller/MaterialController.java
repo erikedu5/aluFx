@@ -1,7 +1,7 @@
-package com.meztli.alufx;
+package com.meztli.alufx.controller;
 
 import com.meztli.alufx.entities.Material;
-import com.meztli.alufx.entities.MaterialRepository;
+import com.meztli.alufx.repository.MaterialRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

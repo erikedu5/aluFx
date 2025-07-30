@@ -1,6 +1,9 @@
-package com.meztli.alufx;
+package com.meztli.alufx.controller;
 
+import com.meztli.alufx.dto.Calculo;
 import com.meztli.alufx.entities.*;
+import com.meztli.alufx.repository.MaterialRepository;
+import com.meztli.alufx.repository.MedidaRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,7 +15,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 

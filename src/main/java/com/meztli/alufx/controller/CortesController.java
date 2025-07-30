@@ -1,7 +1,7 @@
-package com.meztli.alufx;
+package com.meztli.alufx.controller;
 
 import com.meztli.alufx.entities.Corte;
-import com.meztli.alufx.entities.CorteRepository;
+import com.meztli.alufx.repository.CorteRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

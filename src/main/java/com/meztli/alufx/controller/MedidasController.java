@@ -1,6 +1,9 @@
-package com.meztli.alufx;
+package com.meztli.alufx.controller;
 
 import com.meztli.alufx.entities.*;
+import com.meztli.alufx.repository.CorteRepository;
+import com.meztli.alufx.repository.MaterialRepository;
+import com.meztli.alufx.repository.MedidaRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

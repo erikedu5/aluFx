@@ -1,4 +1,4 @@
-package com.meztli.alufx;
+package com.meztli.alufx.dto;
 
 public class Calculo {
 
