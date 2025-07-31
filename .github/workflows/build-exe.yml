@@ -26,6 +26,7 @@ jobs:
         shell: pwsh
         run: |
           mvn -B dependency:copy-dependencies -DincludeScope=runtime -Dmdep.useBaseVersion=true
+
           Copy-Item target/dependency/*.jar target/
 
       - name: Download and extract JavaFX JMODs
