@@ -20,15 +20,8 @@ jobs:
           distribution: 'temurin'
           java-version: '20'
 
-      - name: Detect jpackage type
-        run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then echo "PKG_TYPE=msi" >> $GITHUB_ENV
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then echo "PKG_TYPE=pkg" >> $GITHUB_ENV
-          elif [[ "$RUNNER_OS" == "Linux" ]]; then echo "PKG_TYPE=deb" >> $GITHUB_ENV
-          fi
-
       - name: Build Installer
-        run: mvn clean package -Dpkg.type=$PKG_TYPE
+        run: mvn clean package -Dpkg.type=msi
 
       - name: Detect platform-specific jpackage type
         id: package-type
