@@ -1,5 +1,6 @@
 package com.meztli.alufx.controller;
 
+import com.meztli.alufx.HelloApplication;
 import com.meztli.alufx.dto.Calculo;
 import com.meztli.alufx.entities.*;
 import com.meztli.alufx.repository.MaterialRepository;
@@ -150,7 +151,7 @@ public class HelloController {
     protected void onMaterialesButtonClick() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("materiales-view.fxml"));
+            fxmlLoader.setLocation(HelloApplication.class.getResource("materiales-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 500, 500);
             Stage stage = new Stage();
             stage.setTitle("Materiales");
@@ -165,7 +166,7 @@ public class HelloController {
     protected void onCorteButtonClick() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("corte-view.fxml"));
+            fxmlLoader.setLocation(HelloApplication.class.getResource("corte-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 500, 500);
             Stage stage = new Stage();
             stage.setTitle("Tipos de corte");
@@ -180,7 +181,7 @@ public class HelloController {
     protected void onMedidasButtonClick() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("medidas-view.fxml"));
+            fxmlLoader.setLocation(HelloApplication.class.getResource("medidas-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 400, 600);
             Stage stage = new Stage();
             stage.setTitle("Medidas por corte y tipo de material");
