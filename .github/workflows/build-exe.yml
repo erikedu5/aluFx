@@ -22,6 +22,12 @@ jobs:
       - name: Build project
         run: mvn clean package
 
+      - name: Copy runtime dependencies
+        shell: pwsh
+        run: |
+          mvn -B dependency:copy-dependencies -DincludeScope=runtime -Dmdep.useBaseVersion=true
+          Copy-Item target/dependency/*.jar target/
+
       - name: Download and extract JavaFX JMODs
         run: |
           curl -L -o javafx-jmods.zip https://download2.gluonhq.com/openjfx/20.0.2/openjfx-20.0.2_windows-x64_bin-jmods.zip
@@ -47,6 +53,14 @@ jobs:
       - name: Verificar contenido del JAR
         run: jar tf target/aluFx-1.0-SNAPSHOT.jar
         shell: cmd
+
+      - name: Descargar y extraer MariaDB
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://archive.mariadb.org/mariadb-10.11.6/winx64-packages/mariadb-10.11.6-winx64.zip -OutFile mariadb.zip
+          Expand-Archive mariadb.zip -DestinationPath mariadb-temp
+          Move-Item -Path 'mariadb-temp\mariadb-10.11.6-winx64\*' -Destination 'mariadb' -Force
+          Remove-Item -Recurse -Force mariadb-temp, mariadb.zip
 
       - name: Package MSI with jpackage
         run: |
