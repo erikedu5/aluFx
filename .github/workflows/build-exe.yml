@@ -48,6 +48,13 @@ jobs:
         run: jar tf target/aluFx-1.0-SNAPSHOT.jar
         shell: cmd
 
+      - name: Descargar y extraer MariaDB
+        run: |
+          curl -L -o mariadb.zip https://downloads.sourceforge.net/project/mariadb/mariadb-10.11.6/winx64-packages/mariadb-10.11.6-winx64.zip
+          powershell -command "Expand-Archive -Path 'mariadb.zip' -DestinationPath 'mariadb-temp'"
+          powershell -command "Move-Item -Path 'mariadb-temp\\mariadb-10.11.6-winx64\\*' -Destination 'mariadb' -Force"
+          powershell -command "Remove-Item -Recurse -Force 'mariadb-temp'"
+
       - name: Package MSI with jpackage
         run: |
           jpackage ^
