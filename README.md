@@ -5,3 +5,4 @@ Ejecutar el jar que esta en out como ´ java --module-path /carpeta/javafx-sdk-2
 El flujo de trabajo de GitHub Actions descarga MariaDB 10.11.6 y la incluye de forma portable en el instalador, por lo que no se requiere una instalación previa de MySQL. El paquete también añade el script `scripts/start-mariadb.bat` que inicializa el servidor al ejecutar la aplicación.
 
 
+
