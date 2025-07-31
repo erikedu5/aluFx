@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Java 20
@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '20'
 
-      - name: Build project
+      - name: Build project with Maven
         run: mvn clean package
 
       - name: verify fxml
@@ -28,13 +28,12 @@ jobs:
       - name: Download JavaFX JMODs
         run: |
           curl -L -o javafx-jmods.zip https://download2.gluonhq.com/openjfx/20.0.2/openjfx-20.0.2_windows-x64_bin-jmods.zip
-          mkdir javafx-jmods
-          tar -xf javafx-jmods.zip -C javafx-jmods --strip-components=1
+          powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath 'javafx-jmods'"
 
       - name: Create custom runtime with jlink
         run: |
           jlink ^
-            --module-path "%JAVA_HOME%\jmods;javafx-jmods\jmods" ^
+            --module-path "%JAVA_HOME%\jmods;javafx-jmods\javafx-jmods\jmods" ^
             --add-modules java.base,java.desktop,java.sql,javafx.controls,javafx.fxml ^
             --output custom-runtime ^
             --strip-debug ^
@@ -43,7 +42,7 @@ jobs:
             --no-man-pages
         shell: cmd
 
-      - name: Package .msi installer with jpackage
+      - name: Package MSI installer with jpackage
         run: |
           jpackage ^
             --type msi ^
@@ -59,7 +58,7 @@ jobs:
             --dest target/installer
         shell: cmd
 
-      - name: Upload installer
+      - name: Upload MSI installer
         uses: actions/upload-artifact@v4
         with:
           name: aluFx-installer
