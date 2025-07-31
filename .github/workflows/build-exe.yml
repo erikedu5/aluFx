@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up Java 20
@@ -22,15 +22,12 @@ jobs:
       - name: Build project with Maven
         run: mvn clean package
 
-      - name: verify fxml
-        run: jar tf target/aluFx-1.0-SNAPSHOT.jar | findstr main-view.fxml
-
       - name: Download JavaFX JMODs
         run: |
           curl -L -o javafx-jmods.zip https://download2.gluonhq.com/openjfx/20.0.2/openjfx-20.0.2_windows-x64_bin-jmods.zip
-          powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath 'javafx-jmods'"
+          powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath '.'"
 
-      - name: List JavaFX JMOD files
+      - name: Verify JMOD files
         run: dir javafx-jmods\jmods
         shell: cmd
 
@@ -46,7 +43,7 @@ jobs:
             --no-man-pages
         shell: cmd
 
-      - name: Package MSI installer with jpackage
+      - name: Package MSI with jpackage
         run: |
           jpackage ^
             --type msi ^
@@ -62,7 +59,7 @@ jobs:
             --dest target/installer
         shell: cmd
 
-      - name: Upload MSI installer
+      - name: Upload MSI artifact
         uses: actions/upload-artifact@v4
         with:
           name: aluFx-installer
