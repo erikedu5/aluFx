@@ -11,6 +11,7 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        System.out.println("Working dir: " + System.getProperty("user.dir"));
         URL fxml = HelloApplication.class.getResource("main-view.fxml");
         if (fxml == null) {
             System.err.println("❌ FXML no encontrado");

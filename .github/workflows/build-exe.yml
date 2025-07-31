@@ -44,6 +44,10 @@ jobs:
             --no-man-pages
         shell: cmd
 
+      - name: Verificar contenido del JAR
+        run: jar tf target/aluFx-1.0-SNAPSHOT.jar
+        shell: cmd
+
       - name: Package MSI with jpackage
         run: |
           jpackage ^
@@ -53,8 +57,9 @@ jobs:
             --main-jar aluFx-1.0-SNAPSHOT.jar ^
             --main-class com.meztli.alufx.HelloApplication ^
             --runtime-image custom-runtime ^
-            --app-version 1.0 ^
+            --app-version 1.1 ^
             --win-menu ^
+            --win-console ^
             --win-shortcut ^
             --java-options -Dfile.encoding=UTF-8 ^
             --dest target/installer
