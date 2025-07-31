@@ -30,10 +30,14 @@ jobs:
           curl -L -o javafx-jmods.zip https://download2.gluonhq.com/openjfx/20.0.2/openjfx-20.0.2_windows-x64_bin-jmods.zip
           powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath 'javafx-jmods'"
 
+      - name: List JavaFX JMOD files
+        run: dir javafx-jmods\jmods
+        shell: cmd
+
       - name: Create custom runtime with jlink
         run: |
           jlink ^
-            --module-path "%JAVA_HOME%\jmods;javafx-jmods\javafx-jmods\jmods" ^
+            --module-path "%JAVA_HOME%\jmods;javafx-jmods\jmods" ^
             --add-modules java.base,java.desktop,java.sql,javafx.controls,javafx.fxml ^
             --output custom-runtime ^
             --strip-debug ^
