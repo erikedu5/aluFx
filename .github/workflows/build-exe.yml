@@ -23,17 +23,6 @@ jobs:
       - name: Build Installer
         run: mvn clean package
 
-      - name: Detect platform-specific jpackage type
-        id: package-type
-        run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "type=msi" >> $GITHUB_OUTPUT
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "type=pkg" >> $GITHUB_OUTPUT
-          elif [[ "$RUNNER_OS" == "Linux" ]]; then
-            echo "type=deb" >> $GITHUB_OUTPUT
-          fi
-
       - name: Package installer
         run: |
           jpackage \
