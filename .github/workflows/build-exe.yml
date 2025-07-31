@@ -21,10 +21,12 @@ jobs:
       - name: Package EXE
         run: |
           jpackage ^
-            --type exe ^
+            --type msi ^
             --name aluFx ^
             --input target ^
             --main-jar aluFx-1.0-SNAPSHOT.jar ^
             --main-class com.meztli.alufx.HelloApplication ^
+            --win-installer-script scripts/setup.bat ^
             --app-version 1.0 ^
-            --java-options -Dfile.encoding=UTF-8
+            --java-options -Dfile.encoding=UTF-8 ^`
+            --dest target/installer
