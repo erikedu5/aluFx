@@ -6,7 +6,7 @@ import java.io.IOException;
 public class MariaDBLauncher {
     public static void launch() {
         try {
-            File batFile = new File("scripts/setup.bat");
+            File batFile = new File("scripts/start-mariadb.bat");
             if (!batFile.exists()) {
                 System.err.println("❌ Script start-mariadb.bat no encontrado");
                 return;
