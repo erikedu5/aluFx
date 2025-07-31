@@ -25,9 +25,9 @@ jobs:
       - name: Download JavaFX JMODs
         run: |
           curl -L -o javafx-jmods.zip https://download2.gluonhq.com/openjfx/20.0.2/openjfx-20.0.2_windows-x64_bin-jmods.zip
-          powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath '.'"
+          powershell -command "Expand-Archive -Path 'javafx-jmods.zip' -DestinationPath 'javafx-jmods'"
 
-      - name: Verify JMOD files
+      - name: Show extracted JMODs
         run: dir javafx-jmods\jmods
         shell: cmd
 
