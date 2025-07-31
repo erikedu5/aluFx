@@ -154,7 +154,7 @@
                             <executable>jpackage</executable>
                             <arguments>
                                 <argument>--type</argument>
-                                <argument>pkg</argument>
+                                <argument>${pkg.type}</argument>
                                 <argument>--name</argument>
                                 <argument>aluFx</argument>
                                 <argument>--input</argument>
