@@ -38,7 +38,7 @@ jobs:
       - name: Create custom runtime with jlink
         run: |
           jlink ^
-            --module-path "%JAVA_HOME%\jmods;openjfx-20.0.2_windows-x64_bin-jmods\jmods" ^
+            --module-path "%JAVA_HOME%\jmods;javafx-jmods-20.0.2" ^
             --add-modules java.base,java.desktop,java.sql,javafx.controls,javafx.fxml ^
             --output custom-runtime ^
             --strip-debug ^
