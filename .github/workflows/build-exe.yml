@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build Installer
 
 on:
   push:
@@ -6,29 +6,43 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '20'
-          run: echo "JAVA_HOME=${JAVA_HOME}" >> $GITHUB_ENV
 
       - name: Build with Maven
         run: mvn clean package
 
-
-      - name: Package EXE
+      - name: Detect platform-specific jpackage type
+        id: package-type
         run: |
-          jpackage ^
-            --type msi ^
-            --name aluFx ^
-            --input target ^
-            --main-jar aluFx-1.0-SNAPSHOT.jar ^
-            --main-class com.meztli.alufx.HelloApplication ^
-            --win-installer-script scripts/setup.bat ^
-            --app-version 1.0 ^
-            --java-options -Dfile.encoding=UTF-8 ^`
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "type=msi" >> $GITHUB_OUTPUT
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "type=pkg" >> $GITHUB_OUTPUT
+          elif [[ "$RUNNER_OS" == "Linux" ]]; then
+            echo "type=deb" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Package installer
+        run: |
+          jpackage \
+            --type ${{ steps.package-type.outputs.type }} \
+            --name aluFx \
+            --input target \
+            --main-jar aluFx-1.0-SNAPSHOT.jar \
+            --main-class com.meztli.alufx.HelloApplication \
+            --app-version 1.0 \
+            --java-options -Dfile.encoding=UTF-8 \
             --dest target/installer
+        shell: bash
