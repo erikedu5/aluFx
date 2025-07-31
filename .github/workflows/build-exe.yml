@@ -21,7 +21,7 @@ jobs:
           java-version: '20'
 
       - name: Build Installer
-        run: mvn clean package -Dpkg.type=msi
+        run: mvn clean package
 
       - name: Detect platform-specific jpackage type
         id: package-type
@@ -37,7 +37,7 @@ jobs:
       - name: Package installer
         run: |
           jpackage \
-            --type ${{ steps.package-type.outputs.type }} \
+            --type msi \
             --name aluFx \
             --input target \
             --main-jar aluFx-1.0-SNAPSHOT.jar \
