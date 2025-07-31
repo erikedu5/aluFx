@@ -23,7 +23,7 @@ jobs:
         run: mvn clean package
 
       - name: verify fxml
-        run: jar tf target/aluFx-1.0-SNAPSHOT.jar | findstr hello-view.fxml
+        run: jar tf target/aluFx-1.0-SNAPSHOT.jar | findstr main-view.fxml
 
       - name: Download JavaFX JMODs
         run: |
