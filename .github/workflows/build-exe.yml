@@ -43,7 +43,7 @@ jobs:
         run: |
           jlink ^
             --module-path "%JAVA_HOME%\jmods;javafx-jmods" ^
-            --add-modules java.base,java.desktop,java.sql,javafx.controls,javafx.fxml ^
+            --add-modules java.base,java.desktop,java.sql,java.naming,java.management,java.instrument,java.xml,jdk.unsupported,javafx.controls,javafx.fxml,javafx.web,javafx.media ^
             --output custom-runtime ^
             --strip-debug ^
             --compress 2 ^
@@ -63,12 +63,21 @@ jobs:
           Move-Item -Path 'mariadb-temp\mariadb-10.11.6-winx64\*' -Destination 'mariadb' -Force
           Remove-Item -Recurse -Force mariadb-temp, mariadb.zip
 
+      - name: Prepare distribution directory
+        run: |
+          mkdir target\dist
+          copy target\aluFx-1.0-SNAPSHOT.jar target\dist\
+          copy target\libs\* target\dist\
+          xcopy /E /I scripts target\dist\scripts
+          xcopy /E /I mariadb target\dist\mariadb
+        shell: cmd
+
       - name: Package MSI with jpackage
         run: |
           jpackage ^
             --type msi ^
             --name aluFx ^
-            --input target ^
+            --input target/dist ^
             --main-jar aluFx-1.0-SNAPSHOT.jar ^
             --main-class com.meztli.alufx.HelloApplication ^
             --runtime-image custom-runtime ^
