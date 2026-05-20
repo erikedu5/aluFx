@@ -24,6 +24,28 @@ public class MaterialController {
     @FXML
     private TableView materiales;
 
+    private static final java.util.List<java.lang.ref.WeakReference<Runnable>> onMaterialSavedListeners = new java.util.ArrayList<>();
+
+    public static synchronized void addOnMaterialSavedListener(Runnable listener) {
+        onMaterialSavedListeners.add(new java.lang.ref.WeakReference<>(listener));
+    }
+
+    public static synchronized void notifyMaterialSaved() {
+        java.util.Iterator<java.lang.ref.WeakReference<Runnable>> iterator = onMaterialSavedListeners.iterator();
+        while (iterator.hasNext()) {
+            Runnable listener = iterator.next().get();
+            if (listener == null) {
+                iterator.remove();
+            } else {
+                try {
+                    listener.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @FXML
     public void initialize() {
         MaterialRepository repository = new MaterialRepository();
@@ -47,6 +69,7 @@ public class MaterialController {
         Material material = new Material();
         material.setNombre(nombre.getText());
         repository.save(material);
+        notifyMaterialSaved();
 
         showAlert(Alert.AlertType.INFORMATION, owner, "Creación correcta!",
                 "Material " + nombre.getText() + " Creado correctamente");

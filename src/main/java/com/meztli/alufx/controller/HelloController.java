@@ -42,6 +42,21 @@ public class HelloController {
 
     private String tipoProductoElegido;
 
+    private final Runnable materialSavedListener = this::refreshMateriales;
+
+    public void refreshMateriales() {
+        try {
+            MaterialRepository repository = new MaterialRepository();
+            ObservableList<String> newData = FXCollections.observableArrayList();
+            for (Material m : repository.findAll()) {
+                newData.add(m.getId() + "-" + m.getNombre());
+            }
+            materiales.setItems(newData);
+        } catch (Exception e) {
+            System.out.println("Error al refrescar materiales: " + e.getMessage());
+        }
+    }
+
     public void initialize() {
 
         tipoProducto.getItems().add("Puerta");
@@ -77,20 +92,19 @@ public class HelloController {
         ancho.setTextFormatter(textFormatter);
         alto.setTextFormatter(textFormatter1);
 
-        try {
-            MaterialRepository repository = new MaterialRepository();
-            data = FXCollections.observableArrayList();
-            for (Material m : repository.findAll()) {
-                data.add(m.getId() + "-" + m.getNombre());
-            }
-            materiales.setItems(null);
-            materiales.setItems(data);
+        MaterialController.addOnMaterialSavedListener(materialSavedListener);
+        refreshMateriales();
 
+        try {
             materiales.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-                materialElegido = newValue.toString().split("-")[0];
+                if (newValue != null) {
+                    materialElegido = newValue.toString().split("-")[0];
+                }
             });
             tipoProducto.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-                tipoProductoElegido = newValue.toString();
+                if (newValue != null) {
+                    tipoProductoElegido = newValue.toString();
+                }
             });
         } catch (Exception e) {
             System.out.println(e.getMessage());

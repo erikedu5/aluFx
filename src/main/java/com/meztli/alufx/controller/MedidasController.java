@@ -32,6 +32,21 @@ public class MedidasController {
     @FXML
     ChoiceBox tipoProducto;
 
+    private final Runnable materialSavedListener = this::refreshMateriales;
+
+    public void refreshMateriales() {
+        MaterialRepository materialRepo = new MaterialRepository();
+        try {
+            ObservableList<String> newData = FXCollections.observableArrayList();
+            for (Material m : materialRepo.findAll()) {
+                newData.add(m.getId() + "-" + m.getNombre());
+            }
+            materiales.setItems(newData);
+        } catch (Exception e) {
+            System.out.println("Error al refrescar materiales: " + e.getMessage());
+        }
+    }
+
     @FXML
     public void initialize() {
         dinamic.autosize();
@@ -40,15 +55,10 @@ public class MedidasController {
         tipoProducto.getItems().add("Ventana");
 
         medidasDinamics = new ArrayList<>();
-        MaterialRepository materialRepo = new MaterialRepository();
         CorteRepository corteRepo = new CorteRepository();
         try {
-            data = FXCollections.observableArrayList();
-            for (Material m : materialRepo.findAll()) {
-                data.add(m.getId() + "-" + m.getNombre());
-            }
-            materiales.setItems(null);
-            materiales.setItems(data);
+            MaterialController.addOnMaterialSavedListener(materialSavedListener);
+            refreshMateriales();
 
             for (Corte corte : corteRepo.findAll()) {
                 Label space0 = new Label(" ");
@@ -76,37 +86,41 @@ public class MedidasController {
         }
 
         tipoProducto.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            tipoProductoElegido = newValue.toString();
-            if (tipoProductoElegido != null && materialElegido != null) {
-                this.clearTextFields();
-                MedidaRepository medidaRepo = new MedidaRepository();
-                List<Medida> list = medidaRepo.findByMaterialAndTipoProducto(Integer.parseInt(materialElegido), tipoProductoElegido);
-                for (Medida med : list) {
-                    medidasDinamics.forEach(md -> {
-                        if (med.getCorte().getId() == md.getIdCorte()) {
-                            md.getCheckBox().setSelected(true);
-                            md.getTextField().setText("" + med.getMedida().intValue());
-                        }
-                    });
+            if (newValue != null) {
+                tipoProductoElegido = newValue.toString();
+                if (tipoProductoElegido != null && materialElegido != null) {
+                    this.clearTextFields();
+                    MedidaRepository medidaRepo = new MedidaRepository();
+                    List<Medida> list = medidaRepo.findByMaterialAndTipoProducto(Integer.parseInt(materialElegido), tipoProductoElegido);
+                    for (Medida med : list) {
+                        medidasDinamics.forEach(md -> {
+                            if (med.getCorte().getId() == md.getIdCorte()) {
+                                md.getCheckBox().setSelected(true);
+                                md.getTextField().setText("" + med.getMedida().intValue());
+                            }
+                        });
+                    }
                 }
             }
         });
 
         materiales.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            materialElegido = newValue.toString().split("-")[0];
-            if (tipoProductoElegido != null && materialElegido != null) {
-                this.clearTextFields();
-                MedidaRepository medidaRepo = new MedidaRepository();
-                List<Medida> list = medidaRepo.findByMaterialAndTipoProducto(Integer.parseInt(materialElegido), tipoProductoElegido);
-                for (Medida med : list) {
-                    medidasDinamics.forEach(md -> {
-                        if (med.getCorte().getId() == md.getIdCorte()) {
-                            md.getCheckBox().setSelected(true);
-                            md.getTextField().setText("" + med.getMedida().intValue());
-                        }
-                    });
+            if (newValue != null) {
+                materialElegido = newValue.toString().split("-")[0];
+                if (tipoProductoElegido != null && materialElegido != null) {
+                    this.clearTextFields();
+                    MedidaRepository medidaRepo = new MedidaRepository();
+                    List<Medida> list = medidaRepo.findByMaterialAndTipoProducto(Integer.parseInt(materialElegido), tipoProductoElegido);
+                    for (Medida med : list) {
+                        medidasDinamics.forEach(md -> {
+                            if (med.getCorte().getId() == md.getIdCorte()) {
+                                md.getCheckBox().setSelected(true);
+                                md.getTextField().setText("" + med.getMedida().intValue());
+                            }
+                        });
+                    }
+                    System.out.println(materialElegido);
                 }
-                System.out.println(materialElegido);
             }
         });
     }
