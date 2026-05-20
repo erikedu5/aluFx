@@ -24,6 +24,10 @@ if not exist "%DB_DATA_DIR_WIN%\mysql" (
         exit /b 1
     )
     echo DB initialized successfully.
+    
+    REM Esperar 2 segundos para asegurar que Windows libere todos los bloqueos de archivos tras la inicialización
+    echo Waiting for filesystem locks to release...
+    timeout /t 2 /nobreak >nul
 )
 
 echo Starting MariaDB server...
