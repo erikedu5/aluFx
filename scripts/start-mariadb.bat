@@ -13,18 +13,13 @@ if not exist "%DB_DATA_DIR_WIN%" (
 
 cd /d "%~dp0..\mariadb"
 
-REM Si la carpeta mysql no existe dentro del directorio de datos, inicializarla
+REM Si la carpeta mysql no existe dentro del directorio de datos, inicializarla usando la herramienta nativa de MariaDB
 if not exist "%DB_DATA_DIR_WIN%\mysql" (
     echo Initializing MariaDB database in "%DB_DATA_DIR_WIN%"...
-    bin\mysqld --defaults-file=my.ini --datadir="%DB_DATA_DIR_WIN%" --log-error="%DB_DATA_DIR_WIN%\mysqld.err" --pid-file="%DB_DATA_DIR_WIN%\mysqld.pid" --initialize-insecure
+    bin\mysql_install_db.exe --datadir="%DB_DATA_DIR_WIN%"
     
     if errorlevel 1 (
         echo ❌ Database initialization failed!
-        if exist "%DB_DATA_DIR_WIN%\mysqld.err" (
-            echo --- Content of mysqld.err ---
-            type "%DB_DATA_DIR_WIN%\mysqld.err"
-            echo -----------------------------
-        )
         pause
         exit /b 1
     )
