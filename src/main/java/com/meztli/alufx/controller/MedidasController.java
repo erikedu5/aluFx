@@ -74,6 +74,9 @@ public class MedidasController {
                 CheckBox applica = new CheckBox("Aplica");
                 dinamic.getChildren().add(applica);
 
+                Label labelMedida = new Label("Medida que se corta");
+                dinamic.getChildren().add(labelMedida);
+
                 TextField textField = new TextField();
                 textField.setId(respuesta);
                 dinamic.getChildren().add(textField);
