@@ -24,7 +24,8 @@ public class MariaDBLauncher {
 
             System.out.println("Iniciando proceso MariaDB desde: " + batFile.getAbsolutePath());
             ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", batFile.getAbsolutePath());
-            pb.inheritIO();
+            pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+            pb.redirectError(ProcessBuilder.Redirect.DISCARD);
             dbProcess = pb.start();
             System.out.println("✅ MariaDB lanzado con .bat");
 
