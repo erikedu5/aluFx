@@ -200,6 +200,8 @@
                                         <argument>-Dfile.encoding=UTF-8</argument>
                                         <argument>--app-version</argument>
                                         <argument>1.1</argument>
+                                        <argument>--icon</argument>
+                                        <argument>src/main/resources/logo.ico</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
