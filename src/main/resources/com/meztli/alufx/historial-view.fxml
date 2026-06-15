@@ -21,6 +21,9 @@
        <children>
           <Button onAction="#onDescargarDocxButtonClick" text="Descargar DOCX" />
        </children>
+       <children>
+          <Button onAction="#onBorrarButtonClick" text="Borrar" />
+       </children>
    </HBox>
 </VBox>
 </ScrollPane>

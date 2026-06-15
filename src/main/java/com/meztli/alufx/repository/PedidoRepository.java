@@ -41,4 +41,22 @@ public class PedidoRepository {
             em.close();
         }
     }
+
+    public void delete(int id) {
+        EntityManager em = JpaUtil.getFactory().createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Pedido pedido = em.find(Pedido.class, id);
+            if (pedido != null) {
+                em.remove(pedido);
+            }
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
 }

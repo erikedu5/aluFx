@@ -6,6 +6,7 @@ import com.meztli.alufx.repository.PedidoRepository;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class HistorialController {
 
@@ -74,6 +76,33 @@ public class HistorialController {
         Pedido pedido = new PedidoRepository().findById(seleccionados.get(0).getId());
         helloController.cargarPedido(pedido);
         ((Stage) owner).close();
+    }
+
+    @FXML
+    protected void onBorrarButtonClick() {
+        Window owner = historial.getScene().getWindow();
+        var seleccionados = historial.getSelectionModel().getSelectedItems();
+
+        if (seleccionados.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, owner, "Selección inválida",
+                    "Selecciona al menos un registro del historial para borrarlo");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar borrado");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Seguro que deseas borrar " + seleccionados.size() + " registro(s) del historial?");
+        confirm.initOwner(owner);
+        if (confirm.showAndWait().filter(b -> b == ButtonType.OK).isEmpty()) {
+            return;
+        }
+
+        PedidoRepository pedidoRepository = new PedidoRepository();
+        for (Pedido pedido : new ArrayList<>(seleccionados)) {
+            pedidoRepository.delete(pedido.getId());
+        }
+        refreshHistorial();
     }
 
     @FXML
