@@ -3,8 +3,8 @@ package com.meztli.alufx.dto;
 public class Calculo {
 
     private String tipoCorte;
-    private Double ancho;
-    private Double alto;
+    private String ancho;
+    private String alto;
 
     public String getTipoCorte() {
         return tipoCorte;
@@ -14,19 +14,19 @@ public class Calculo {
         this.tipoCorte = tipoCorte;
     }
 
-    public Double getAncho() {
+    public String getAncho() {
         return ancho;
     }
 
-    public void setAncho(Double ancho) {
+    public void setAncho(String ancho) {
         this.ancho = ancho;
     }
 
-    public Double getAlto() {
+    public String getAlto() {
         return alto;
     }
 
-    public void setAlto(Double alto) {
+    public void setAlto(String alto) {
         this.alto = alto;
     }
 }

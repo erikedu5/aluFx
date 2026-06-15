@@ -46,10 +46,32 @@
        <children>
           <Button alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#onCalculateButtonClick" text="Calcular" />
       </children>
+       <children>
+          <Label text="Nombre " />
+          <TextField fx:id="nombre" />
+          <Label text=" "/>
+       </children>
+       <children>
+          <Button alignment="BASELINE_CENTER" mnemonicParsing="false" onAction="#onGuardarButtonClick" text="Guardar" />
+      </children>
    </VBox>
    <TableView fx:id="calculo" prefHeight="200.0" prefWidth="200.0">
      <columns>
      </columns>
    </TableView>
+
+   <Label text="Historial" />
+   <TableView fx:id="historial" prefHeight="200.0" prefWidth="200.0">
+     <columns>
+     </columns>
+   </TableView>
+   <HBox prefHeight="0.0" prefWidth="200.0" alignment="BASELINE_CENTER" spacing="10.0">
+       <children>
+          <Button onAction="#onCargarButtonClick" text="Cargar" />
+       </children>
+       <children>
+          <Button onAction="#onDescargarDocxButtonClick" text="Descargar DOCX" />
+       </children>
+   </HBox>
 
 </VBox>

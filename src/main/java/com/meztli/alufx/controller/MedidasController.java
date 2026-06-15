@@ -99,7 +99,7 @@ public class MedidasController {
                         medidasDinamics.forEach(md -> {
                             if (med.getCorte().getId() == md.getIdCorte()) {
                                 md.getCheckBox().setSelected(true);
-                                md.getTextField().setText("" + med.getMedida().intValue());
+                                md.getTextField().setText(String.valueOf(med.getMedida()));
                             }
                         });
                     }
@@ -118,7 +118,7 @@ public class MedidasController {
                         medidasDinamics.forEach(md -> {
                             if (med.getCorte().getId() == md.getIdCorte()) {
                                 md.getCheckBox().setSelected(true);
-                                md.getTextField().setText("" + med.getMedida().intValue());
+                                md.getTextField().setText(String.valueOf(med.getMedida()));
                             }
                         });
                     }
@@ -148,10 +148,13 @@ public class MedidasController {
                 medida.setMaterial(material);
                 medida.setTipoProducto(tipoProductoElegido);
                 medida.setMedida(medidasDinamic.getTextField().getText().equals("") ? 0.0 : Double.valueOf(medidasDinamic.getTextField().getText()));
-                try {
+                boolean existe = medidaRepo.existsByCorteAndMaterialAndTipoProducto(
+                        medidasDinamic.getIdCorte(), Integer.parseInt(materialElegido), tipoProductoElegido);
+                if (existe) {
+                    medidaRepo.updateMedida(medida.getMedida(), medidasDinamic.getIdCorte(),
+                            Integer.parseInt(materialElegido), tipoProductoElegido);
+                } else {
                     medidaRepo.save(medida);
-                } catch (RuntimeException e) {
-                    medidaRepo.updateMedida(medida.getMedida(), medidasDinamic.getIdCorte(), Integer.parseInt(materialElegido));
                 }
             }
         });
