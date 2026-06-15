@@ -13,21 +13,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,9 +42,6 @@ public class HelloController {
 
     @FXML
     TableView calculo;
-
-    @FXML
-    TableView<Pedido> historial;
 
     @FXML
     ChoiceBox tipoProducto;
@@ -130,24 +119,6 @@ public class HelloController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        TableColumn<Pedido, String> nombreCol = new TableColumn<>("Nombre");
-        nombreCol.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-
-        TableColumn<Pedido, String> fechaCol = new TableColumn<>("Fecha");
-        fechaCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
-
-        TableColumn<Pedido, String> materialCol = new TableColumn<>("Material");
-        materialCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getMaterial().getNombre()));
-
-        TableColumn<Pedido, String> productoCol = new TableColumn<>("Producto");
-        productoCol.setCellValueFactory(new PropertyValueFactory<>("tipoProducto"));
-
-        historial.getColumns().addAll(nombreCol, fechaCol, materialCol, productoCol);
-        historial.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        refreshHistorial();
     }
 
     @FXML
@@ -195,11 +166,6 @@ public class HelloController {
         calculo.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    private void refreshHistorial() {
-        PedidoRepository pedidoRepository = new PedidoRepository();
-        historial.setItems(FXCollections.observableArrayList(pedidoRepository.findAll()));
-    }
-
     @FXML
     protected void onGuardarButtonClick() {
         Window owner = nombre.getScene().getWindow();
@@ -242,25 +208,12 @@ public class HelloController {
         pedido.setDetalles(detalles);
 
         new PedidoRepository().save(pedido);
-        refreshHistorial();
 
         showAlert(Alert.AlertType.INFORMATION, owner, "Guardado correcto!",
                 "El pedido se guardó correctamente en el historial");
     }
 
-    @FXML
-    protected void onCargarButtonClick() {
-        Window owner = nombre.getScene().getWindow();
-        var seleccionados = historial.getSelectionModel().getSelectedItems();
-
-        if (seleccionados.size() != 1) {
-            showAlert(Alert.AlertType.ERROR, owner, "Selección inválida",
-                    "Selecciona un solo registro del historial para cargarlo");
-            return;
-        }
-
-        Pedido pedido = new PedidoRepository().findById(seleccionados.get(0).getId());
-
+    public void cargarPedido(Pedido pedido) {
         materiales.getSelectionModel().select(pedido.getMaterial().getId() + "-" + pedido.getMaterial().getNombre());
         tipoProducto.getSelectionModel().select(pedido.getTipoProducto());
         alto.setText(String.valueOf(pedido.getAlto()));
@@ -279,68 +232,20 @@ public class HelloController {
     }
 
     @FXML
-    protected void onDescargarDocxButtonClick() {
-        Window owner = nombre.getScene().getWindow();
-        var seleccionados = historial.getSelectionModel().getSelectedItems();
-
-        if (seleccionados.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, owner, "Selección inválida",
-                    "Selecciona al menos un registro del historial");
-            return;
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Guardar como");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento Word", "*.docx"));
-        fileChooser.setInitialFileName("historial.docx");
-        File file = fileChooser.showSaveDialog(owner);
-        if (file == null) {
-            return;
-        }
-
-        try (XWPFDocument document = new XWPFDocument()) {
-            for (Pedido pedido : seleccionados) {
-                XWPFParagraph titulo = document.createParagraph();
-                XWPFRun tituloRun = titulo.createRun();
-                tituloRun.setBold(true);
-                tituloRun.setFontSize(14);
-                tituloRun.setText(pedido.getNombre());
-
-                XWPFParagraph info = document.createParagraph();
-                XWPFRun infoRun = info.createRun();
-                infoRun.setText("Fecha: " + pedido.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
-                infoRun.addBreak();
-                infoRun.setText("Material: " + pedido.getMaterial().getNombre());
-                infoRun.addBreak();
-                infoRun.setText("Producto: " + pedido.getTipoProducto());
-                infoRun.addBreak();
-                infoRun.setText("Alto: " + pedido.getAlto() + "   Ancho: " + pedido.getAncho());
-
-                XWPFTable table = document.createTable(pedido.getDetalles().size() + 1, 3);
-                XWPFTableRow header = table.getRow(0);
-                header.getCell(0).setText("Tipo de corte");
-                header.getCell(1).setText("Alto");
-                header.getCell(2).setText("Ancho");
-                for (int i = 0; i < pedido.getDetalles().size(); i++) {
-                    PedidoDetalle detalle = pedido.getDetalles().get(i);
-                    XWPFTableRow row = table.getRow(i + 1);
-                    row.getCell(0).setText(detalle.getTipoCorte());
-                    row.getCell(1).setText(detalle.getAltoResultado());
-                    row.getCell(2).setText(detalle.getAnchoResultado());
-                }
-
-                document.createParagraph();
-            }
-
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                document.write(out);
-            }
-
-            showAlert(Alert.AlertType.INFORMATION, owner, "Descarga completa",
-                    "El archivo se generó correctamente en " + file.getAbsolutePath());
+    protected void onVerHistorialButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(HelloApplication.class.getResource("historial-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 500, 500);
+            HistorialController controller = fxmlLoader.getController();
+            controller.setHelloController(this);
+            Stage stage = new Stage();
+            stage.setTitle("Historial");
+            stage.getIcons().add(new Image(HelloApplication.class.getResourceAsStream("/logo.png")));
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "No se pudo generar el documento: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -361,6 +266,7 @@ public class HelloController {
             Scene scene = new Scene(fxmlLoader.load(), 500, 500);
             Stage stage = new Stage();
             stage.setTitle("Materiales");
+            stage.getIcons().add(new Image(HelloApplication.class.getResourceAsStream("/logo.png")));
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -376,6 +282,7 @@ public class HelloController {
             Scene scene = new Scene(fxmlLoader.load(), 500, 500);
             Stage stage = new Stage();
             stage.setTitle("Tipos de corte");
+            stage.getIcons().add(new Image(HelloApplication.class.getResourceAsStream("/logo.png")));
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -391,6 +298,7 @@ public class HelloController {
             Scene scene = new Scene(fxmlLoader.load(), 400, 600);
             Stage stage = new Stage();
             stage.setTitle("Medidas por corte y tipo de material");
+            stage.getIcons().add(new Image(HelloApplication.class.getResourceAsStream("/logo.png")));
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

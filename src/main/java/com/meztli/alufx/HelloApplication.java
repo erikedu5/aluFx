@@ -4,6 +4,7 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(fxml);
         Scene scene = new Scene(fxmlLoader.load(), 500, 600);
         stage.setTitle("Alu-Helper");
+        stage.getIcons().add(new Image(HelloApplication.class.getResourceAsStream("/logo.png")));
         stage.setScene(scene);
         stage.show();
     }
